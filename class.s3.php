@@ -63,7 +63,6 @@ class S3 {
 	/**
 	* Get a list of buckets
 	*
-	* @param boolean $detailed Returns detailed bucket list when true
 	* @return array | false
 	*/
 	public static function listBuckets() {
@@ -84,15 +83,10 @@ class S3 {
 		}
 		return $results;
 	}
-	/*
+	/**
 	* Get contents for a bucket
 	*
-	* If maxKeys is null this method will loop through truncated result sets
-	*
 	* @param string $bucket Bucket name
-	* @param string $prefix Prefix
-	* @param string $marker Marker (last file listed)
-	* @param string $maxKeys Max keys (maximum number of keys to return)
 	* @return array | false
 	*/
 	public static function getBucket($bucket) {
