@@ -21,13 +21,15 @@ This class is a standalone S3 REST implementation for PHP 5.2.x (using CURL), th
 
 ```php
 $s3 = new S3($KilatStorageAccessKey, $KilatStorageSecretKey);
+```
+
 
 #### Object Operations
 
 Put an object from a file:
 
 ```php
-S3::putObjectFile($file, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $contentType = null)
+S3::putObject(S3::inputFile($file, false), $bucketName, $uploadName, S3::ACL_PUBLIC_READ)
 ```
 
 Delete an object:
