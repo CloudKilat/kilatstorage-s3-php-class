@@ -24,11 +24,12 @@
 /**
 * Kilat Storage S3 PHP class
 *
-* This plugin is a fork of the following:
+* Version: 0.1.2
+*
+* This code is a fork of the following:
 * @link http://undesigned.org.za/2007/10/22/amazon-s3-php-class
 * @version 0.2.3
 *
-* Version: 0.1.2
 **/
 class S3 {
 	// ACL flags
