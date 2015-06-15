@@ -24,7 +24,7 @@
 /**
 * Kilat Storage S3 PHP class
 *
-* Version: 0.1.2
+* Version: 0.1.3
 *
 * This code is a fork of the following:
 * @link http://undesigned.org.za/2007/10/22/amazon-s3-php-class
@@ -36,6 +36,8 @@ class S3 {
 	const ACL_PRIVATE = 'private';
 	const ACL_PUBLIC_READ = 'public-read';
 	const ACL_PUBLIC_READ_WRITE = 'public-read-write';
+	const STORAGE_CLASS_STANDARD = 'STANDARD';
+	const STORAGE_CLASS_RRS = 'REDUCED_REDUNDANCY';
 	private static $__accessKey; // Kilat Storage Access key
 	private static $__secretKey; // Kilat Storage Secret key
 	/**
@@ -322,6 +324,51 @@ class S3 {
 			return false;
 		}
 		return $rest->code == 200 ? $returnInfo ? $rest->headers : true : false;
+	}
+	/**
+	* Copy an object
+	*
+	* @param string $srcBucket Source bucket name
+	* @param string $srcUri Source object URI
+	* @param string $bucket Destination bucket name
+	* @param string $uri Destination object URI
+	* @param constant $acl ACL constant
+	* @param array $metaHeaders Optional array of x-amz-meta-* headers
+	* @param array $requestHeaders Optional array of request headers (content type, disposition, etc.)
+	* @param constant $storageClass Storage class constant
+	* @return mixed | false
+	*/
+	public static function copyObject($srcBucket, $srcUri, $bucket, $uri, $acl = self::ACL_PUBLIC_READ, $metaHeaders = array(), $requestHeaders = array(), $storageClass = self::STORAGE_CLASS_STANDARD)
+	{
+		$rest = new S3Request('PUT', $bucket, $uri);
+		$rest->setHeader('Content-Length', 0);
+		foreach ($requestHeaders as $h => $v) $rest->setHeader($h, $v);
+		foreach ($metaHeaders as $h => $v) $rest->setAmzHeader('x-amz-meta-'.$h, $v);
+		if ($storageClass !== self::STORAGE_CLASS_STANDARD) 
+			$rest->setAmzHeader('x-amz-storage-class', $storageClass);
+		$rest->setAmzHeader('x-amz-acl', $acl);
+		$rest->setAmzHeader('x-amz-copy-source', sprintf('/%s/%s', $srcBucket, rawurlencode($srcUri)));
+		if (sizeof($requestHeaders) > 0 || sizeof($metaHeaders) > 0)
+			$rest->setAmzHeader('x-amz-metadata-directive', 'REPLACE');
+		$rest = $rest->getResponse();
+		if ($rest->error === false && $rest->code !== 200)
+			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
+		if ($rest->error !== false)
+		{
+			self::__triggerError(sprintf("S3::copyObject({$srcBucket}, {$srcUri}, {$bucket}, {$uri}): [%s] %s",
+			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
+			return false;
+		}
+		$results = array();
+		if (!isset($rest->body->LastModified, $rest->body->ETag)) {
+			$contents = simplexml_load_string($rest->body);
+			$results = array(
+				'time' => strToTime((string)$contents->LastModified),
+				'hash' => substr((string)$contents->ETag, 1, -1)
+			);
+		}
+
+		return $results;
 	}
 	/**
 	* Set logging for a bucket

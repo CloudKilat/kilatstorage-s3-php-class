@@ -4,7 +4,7 @@
 
 About | Description
 ------------ | -------------
-Stable tag | 0.1.2
+Stable tag | 0.1.3
 License | GPLv2 or later
 License URI | http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,13 +29,20 @@ $s3 = new S3($KilatStorageAccessKey, $KilatStorageSecretKey);
 Put an object from a file:
 
 ```php
-S3::putObject(S3::inputFile($file, false), $bucketName, $uploadName, S3::ACL_PUBLIC_READ)
+S3::putObject(S3::inputFile($file, false), $bucket_name, $upload_name, S3::ACL_PUBLIC_READ)
 ```
+
+Copy an object:
+
+```php
+S3::copyObject($src_bucket_name, $src_uri, $target_bucket_name, $target_uri)
+```
+
 
 Delete an object:
 
 ```php
-S3::deleteObject($bucketName, $uploadName)
+S3::deleteObject($bucket_name, $upload_name)
 ```
 
 
@@ -50,17 +57,17 @@ S3::listBuckets()
 Create a bucket:
 
 ```php
-S3::putBucket($bucketName)
+S3::putBucket($bucket_name)
 ```
 
 Get the contents of a bucket:
 
 ```php
-S3::getBucket($bucketName)
+S3::getBucket($bucket_name)
 ```
 
 Delete an empty bucket:
 
 ```php
-S3::deleteBucket($bucketName)
+S3::deleteBucket($bucket_name)
 ```
