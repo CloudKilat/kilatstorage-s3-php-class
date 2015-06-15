@@ -14,7 +14,6 @@ This class is a standalone S3 REST implementation for PHP 5.2.x (using CURL), th
 
 ### Notes
 
-* Some methods are not implemented yet, such as copy object.
 * Not tested yet on HTTPS endpoint.
 
 ### Usage
