@@ -78,7 +78,10 @@ class S3 {
 		if (!isset($rest->body->Buckets)) {
 			$contents = simplexml_load_string($rest->body);
 			foreach($contents->Buckets->Bucket as $bucket) {
-				$results[] = (string)$bucket->Name;
+				$results[] = array(
+					'name' => (string)$bucket->Name,
+					'time' => strtotime((string)$bucket->CreationDate),
+					);
 			}
 		}
 		return $results;
