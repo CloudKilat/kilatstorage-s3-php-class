@@ -789,6 +789,7 @@ final class S3Request {
 	* @return integer
 	*/
 	private function __responseWriteCallback(&$curl, &$data) {
+		$this->response->body = '';
 		if ($this->response->code == 200 && $this->fp !== false)
 			return fwrite($this->fp, $data);
 		else
