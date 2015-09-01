@@ -360,7 +360,7 @@ class S3 {
 		}
 		$results = array();
 		$contents = simplexml_load_string($rest->body);
-		if (isset($contents->LastModified, $rest->body->ETag)) {
+		if (isset($contents->LastModified, $contents->ETag)) {
 			$results = array(
 				'time' => strToTime((string)$contents->LastModified),
 				'hash' => substr((string)$contents->ETag, 1, -1)
