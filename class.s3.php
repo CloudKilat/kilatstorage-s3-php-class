@@ -77,8 +77,8 @@ class S3 {
 			return false;
 		}
 		$results = array();
-		if (!isset($rest->body->Buckets)) {
-			$contents = simplexml_load_string($rest->body);
+		$contents = simplexml_load_string($rest->body);
+		if (isset($contents->Buckets)) {
 			foreach($contents->Buckets->Bucket as $bucket) {
 				$results[] = array(
 					'name' => (string)$bucket->Name,
@@ -104,9 +104,8 @@ class S3 {
 			return false;
 		}
 		$results = array();
-		if (!isset($response->body->Contents)) {
-
-			$contents = simplexml_load_string($response->body);
+		$contents = simplexml_load_string($response->body);
+		if (isset($contents->Contents)) {
 			foreach ($contents->Contents as $c) {
 				$results[] = array(
 					'name' => (string)$c->Key,
@@ -114,7 +113,7 @@ class S3 {
 					'size' => (int)$c->Size,
 					'hash' => substr((string)$c->ETag, 1, -1)
 				);
-			} 
+			}
 		}
 		
 		return $results;
@@ -360,8 +359,8 @@ class S3 {
 			return false;
 		}
 		$results = array();
-		if (!isset($rest->body->LastModified, $rest->body->ETag)) {
-			$contents = simplexml_load_string($rest->body);
+		$contents = simplexml_load_string($rest->body);
+		if (isset($contents->LastModified, $rest->body->ETag)) {
 			$results = array(
 				'time' => strToTime((string)$contents->LastModified),
 				'hash' => substr((string)$contents->ETag, 1, -1)
@@ -504,12 +503,12 @@ class S3 {
 		}
 		$acp = array();
 		$contents = simplexml_load_string($rest->body);
-		if (!isset($rest->body->Owner, $rest->body->Owner->ID, $rest->body->Owner->DisplayName)) {
+		if (isset($contents->Owner, $contents->Owner->ID, $contents->Owner->DisplayName)) {
 			$acp['owner'] = array(
 				'id' => (string)$contents->Owner->ID, 'name' => (string)$contents->Owner->DisplayName
 			);
 		}
-		if (!isset($rest->body->AccessControlList)) {
+		if (isset($contents->AccessControlList)) {
 			$acp['acl'] = array();
 			foreach ($contents->AccessControlList->Grant as $grant) {
 				foreach ($grant->Grantee as $grantee) {
