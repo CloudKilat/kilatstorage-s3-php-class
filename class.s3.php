@@ -503,14 +503,15 @@ class S3 {
 			return false;
 		}
 		$acp = array();
-		if (isset($rest->body->Owner, $rest->body->Owner->ID, $rest->body->Owner->DisplayName)) {
+		$contents = simplexml_load_string($rest->body);
+		if (!isset($rest->body->Owner, $rest->body->Owner->ID, $rest->body->Owner->DisplayName)) {
 			$acp['owner'] = array(
-				'id' => (string)$rest->body->Owner->ID, 'name' => (string)$rest->body->Owner->DisplayName
+				'id' => (string)$contents->Owner->ID, 'name' => (string)$contents->Owner->DisplayName
 			);
 		}
-		if (isset($rest->body->AccessControlList)) {
+		if (!isset($rest->body->AccessControlList)) {
 			$acp['acl'] = array();
-			foreach ($rest->body->AccessControlList->Grant as $grant) {
+			foreach ($contents->AccessControlList->Grant as $grant) {
 				foreach ($grant->Grantee as $grantee) {
 					if (isset($grantee->ID, $grantee->DisplayName)) // CanonicalUser
 						$acp['acl'][] = array(
