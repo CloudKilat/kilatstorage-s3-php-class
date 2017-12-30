@@ -10,7 +10,14 @@ License URI | http://www.gnu.org/licenses/gpl-2.0.html
 
 ### Description
 
-This class is a standalone S3 REST implementation for PHP 5.2.x (using CURL), that supports large file uploads and doesn’t require PEAR.
+This class is a standalone S3 REST implementation for PHP 5.2.x (using CURL), that supports large file uploads and doesnâ€™t require PEAR.
+
+### Dependencies
+
+This Class need curl, xml PHP extesions enabled.
+
+On Windows OS, edit php.ini and uncomment coresponding extension by removing `;` eg. `;extension=php_curl.dll;` to `extension=php_curl.dll`
+On Linux with Debian based distro (eg. Ubuntu, Linux Mint, etc) install the extension by `sudo apt-get install php-curl php-xml`.
 
 ### Notes
 
